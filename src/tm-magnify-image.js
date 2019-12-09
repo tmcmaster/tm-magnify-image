@@ -1,5 +1,7 @@
 import {html, css, LitElement} from 'lit-element';
 
+import {addListener} from "@polymer/polymer/lib/utils/gestures";
+
 window.customElements.define('tm-magnify-image', class extends LitElement {
 
     // noinspection JSUnusedGlobalSymbols
@@ -28,6 +30,7 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
                 box-sizing: border-box;
                 border: solid gray 1px;
                 position: relative;
+                z-index: 1;
             }
             #magnified-image {
                 display: block;
@@ -40,7 +43,7 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
                 //border: 3px solid #000;
                 border-radius: 50%;
                 cursor: none;
-                z-index: 3;
+                z-index: 2;
             }
         `;
     }
@@ -48,7 +51,7 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
     // noinspection JSUnusedGlobalSymbols
     render() {
         return html`
-            <slot id="slot" @slotted="${() => this.initMagnifyingGlass()}"></slot>
+            <slot id="slot"></slot>
             <div id="magnified-image"></div>
         `;
     }
@@ -58,11 +61,19 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
         const images = this.shadowRoot.getElementById('slot').assignedNodes().filter(el => el.tagName === 'IMG');
         if (images.length > 0) {
             this.img = images[0];
-            this.initMagnifyingGlass();
+            this.positionMagifyingGlass();
+            addListener(this.mag, 'track', (e) => {
+                const {dx, dy, x, y} = e.detail;
+                console.log(dx, dy);
+                this.ratioX = x / this.img.width;
+                this.ratioY = y / this.img.height;
+                this.positionMagifyingGlass();
+            });
         }
+
     }
 
-    initMagnifyingGlass() {
+    positionMagifyingGlass() {
         const {img, mag, zoom, ratioX, ratioY, ratioSize} = this;
 
         const magImageWidth = (img.width * zoom);
@@ -72,8 +83,8 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
         const magDivTop = (ratioY * 100) - (magDivHeight / 2);
         const magDivLeft = (ratioX * 100) - (magDivWidth / 2);
 
-        const magDivImageOffsetLeft = magImageWidth * magDivTop / 100 + (ratioSize/2*img.width);
-        const magDivImageOffsetTop = magImageHeight * magDivLeft / 100 + (ratioSize/2*img.height);
+        const magDivImageOffsetLeft = magImageWidth * magDivLeft / 100 + (ratioSize/2*img.width);
+        const magDivImageOffsetTop = magImageHeight * magDivTop / 100 + (ratioSize/2*img.height);
 
         mag.style.top = magDivTop + "%";
         mag.style.left = magDivLeft + "%";
@@ -89,6 +100,5 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
         //mag.style.backgroundPosition = "-" + (magDivTop*img.width*zoom) + "% -" + (magDivLeft*img.height*zoom) + "%";
 
         console.log('Image: ', mag.style.backgroundImage);
-
     }
 });

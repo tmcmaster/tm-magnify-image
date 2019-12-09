@@ -20,7 +20,7 @@ render(html`
         }
     </style>
     <tm-examples heading="Magnify Image" .sites="${sites}">
-        <section title="Vaadin Button">
+        <section title="Magnify Image">
             <tm-magnify-image><img src="images/colourful-grid.png"/></tm-magnify-image>
         </section>
     </tm-examples>
