@@ -1,17 +1,17 @@
-# template-web-component
+# tm-magnify-image
 
 This is a template for creating new web component repositories.
 
 ## Installation
 ```bash
-npm install @wonkytech/template-web-component
+npm install @wonkytech/tm-magnify-image
 ```
 
 ## Usage
 ```html
 <script type="module">
-  import '@wonkytech/template-web-component';
+  import '@wonkytech/tm-magnify-image';
 </script>
 
-<template-web-component></template-web-component>
+<tm-magnify-image></tm-magnify-image>
 ```
