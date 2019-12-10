@@ -1,7 +1,7 @@
 {
     "scripts": {
         "web": "npx @pika/web --dest ../docs/web_modules",
-        "build": "npm install && npm run web"
+        "build": "npm update && npm run web"
     },
     "dependencies": {
         "@wonkytech/tm-examples": "latest",

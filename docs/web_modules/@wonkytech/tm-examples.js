@@ -74024,10 +74024,10 @@ window.customElements.define('tm-examples', class extends LitElement {
     } = this; //console.log('Sections: ', sections);
 
     sections.forEach((section, index) => {
-      const title = section.getAttribute('title');
-      const heading = document.createElement('h3');
-      heading.style = 'color:grey;margin-bottom:10px;';
-      heading.innerText = title === null ? 'Example' : title;
+      const title = section.getAttribute('title'); // const heading = document.createElement('h3');
+      // heading.style = 'color:grey;margin-bottom:10px;';
+      // heading.innerText = (title === null? 'Example' : title);
+
       const button = document.createElement('button');
 
       button.onclick = () => {
@@ -74042,8 +74042,8 @@ window.customElements.define('tm-examples', class extends LitElement {
       const hr = document.createElement('hr');
       hr.style = "border:solid lightgrey 0.5px;";
       section.insertBefore(hr, section.firstChild);
-      section.insertBefore(button, section.firstChild);
-      section.insertBefore(heading, section.firstChild);
+      section.insertBefore(button, section.firstChild); //section.insertBefore(heading, section.firstChild);
+
       const tab = document.createElement('vaadin-tab');
       tab.appendChild(document.createTextNode(title));
       tabs.appendChild(tab);
@@ -74092,11 +74092,10 @@ window.customElements.define('tm-examples', class extends LitElement {
                 background: var(--tm-demo-background, inherit);
                 //border: solid gray 2px;
                 box-sizing: border-box;
-                padding: 10px;
                 width: 100%;
                 height: 100%;
                 --tm-example-icon-size: 32px;
-                padding: 20px;
+                padding: 3vmin;
             }
 
             article {
@@ -74129,6 +74128,7 @@ window.customElements.define('tm-examples', class extends LitElement {
             
             tm-sites {
                 width: 100%;
+                float: right;
                 margin-bottom: 20px;
             }
             header {
@@ -74143,6 +74143,18 @@ window.customElements.define('tm-examples', class extends LitElement {
                 max-height: 25px;
                 margin-top: 5px;
             }
+            
+            div.header {
+                height: 50px;
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            tm-sites > h2, tm-sites > span {
+                color: gray;
+            }
         `;
   } // noinspection JSUnusedGlobalSymbols
 
@@ -74152,16 +74164,19 @@ window.customElements.define('tm-examples', class extends LitElement {
             
             <article>
                 <header>
-                    <h1>${this.heading}</h1>
-                    ${Object.keys(this.sites).length === 0 ? "" : html$1`
-                        <tm-sites .sites="${this.sites}"></tm-sites>
-                    `}
+                    <div class="header">
+                        ${Object.keys(this.sites).length === 0 ? "" : html$1`
+                            <tm-sites .sites="${this.sites}">
+                                <h2 slot="left">${this.heading}</h2>
+                                <h2 slot="right">Demos</h2>
+                            </tm-sites>
+                        `}
+                    </div>
                     <hr/>                
                     <nav>
                         <vaadin-tabs id="tabs"></vaadin-tabs>
                     </nav>
                 </header>
-
                 <main>
                     <slot id="slot"></slot>
                 </main>
