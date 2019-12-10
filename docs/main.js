@@ -12,7 +12,6 @@ let sites = {
 render(html`
     <style>
         body {
-          background-color: lightgray;
           padding: 0;
           margin: 0;
         } 
@@ -22,6 +21,11 @@ render(html`
         }
     </style>
     <tm-examples heading="Magnify Image" .sites="${sites}">
+        <section title="Draggable">
+            <tm-magnify-image draggable>
+                <img src="images/colourful-grid.png"/>
+            </tm-magnify-image>
+        </section>
         <section title="Fixed">
             <tm-magnify-image>
                 <img src="images/colourful-grid.png"/>
@@ -29,11 +33,6 @@ render(html`
         </section>
         <section title="Smaller">
             <tm-magnify-image ratioSize="0.2">
-                <img src="images/colourful-grid.png"/>
-            </tm-magnify-image>
-        </section>
-        <section title="Draggable">
-            <tm-magnify-image draggable>
                 <img src="images/colourful-grid.png"/>
             </tm-magnify-image>
         </section>
