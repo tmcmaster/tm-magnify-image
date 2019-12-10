@@ -54,6 +54,7 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
                 //display: none;
                 box-sizing: border-box;
                 //border: solid darkblue 2px;
+                -webkit-user-drag: none;
             }
         `;
     }

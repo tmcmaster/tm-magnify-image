@@ -27,13 +27,13 @@ render(html`
                 <img src="images/colourful-grid.png"/>
             </tm-magnify-image>
         </section>
-        <section title="Draggable">
-            <tm-magnify-image draggable>
+        <section title="Smaller">
+            <tm-magnify-image ratioSize="0.2">
                 <img src="images/colourful-grid.png"/>
             </tm-magnify-image>
         </section>
-        <section title="Smaller">
-            <tm-magnify-image draggable ratioSize="0.2">
+        <section title="Draggable">
+            <tm-magnify-image draggable>
                 <img src="images/colourful-grid.png"/>
             </tm-magnify-image>
         </section>
