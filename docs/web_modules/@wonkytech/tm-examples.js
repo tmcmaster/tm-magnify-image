@@ -74015,8 +74015,9 @@ window.customElements.define('tm-examples', class extends LitElement {
     this.tabs = this.shadowRoot.querySelector('#tabs');
     this.sections = this.shadowRoot.querySelector('#slot').assignedNodes().filter(node => node.nodeName === "SECTION");
     fetchSource(getSourcePath(this.source)).then(source => {
-      this.sourceList = parseSectionSource(source); //console.log('------', sourceList);
-    }).catch(error => {//console.log('------', error);
+      this.sourceList = parseSectionSource(source);
+    }).catch(error => {
+      console.error('There was an error get the source for the examples.', error);
     });
     const {
       tabs,
@@ -74024,41 +74025,44 @@ window.customElements.define('tm-examples', class extends LitElement {
     } = this; //console.log('Sections: ', sections);
 
     sections.forEach((section, index) => {
-      const title = section.getAttribute('title'); // const heading = document.createElement('h3');
-      // heading.style = 'color:grey;margin-bottom:10px;';
-      // heading.innerText = (title === null? 'Example' : title);
-
+      const title = section.getAttribute('title');
+      section.style = "display: flex";
+      const scripts = Array.from(section.childNodes).filter(node => node.tagName === 'SCRIPT');
+      scripts.forEach(script => {
+        let clone = document.createElement('script');
+        clone.innerText = script.innerText;
+        document.head.appendChild(clone);
+        section.removeChild(script);
+      });
+      const styles = Array.from(section.childNodes).filter(node => node.tagName === 'STYLE');
+      styles.forEach(style => {
+        let clone = document.createElement('style');
+        clone.innerText = style.innerText;
+        document.head.appendChild(clone);
+        section.removeChild(style);
+      });
       const button = document.createElement('button');
 
       button.onclick = () => {
         const {
           sourceList
         } = this;
-        this.shadowRoot.getElementById('ddd').viewSource(sourceList[index]);
+        this.shadowRoot.getElementById('source').viewSource(sourceList[index]);
       };
 
-      button.style = 'float:right;margin-top:-30px;border:solid lightgrey 0.5px;';
+      button.name = 'source';
+      button.style = 'margin-top:-20px;float:right;border:solid lightgrey 0.5px;';
       button.appendChild(document.createTextNode('Source'));
-      const hr = document.createElement('hr');
-      hr.style = "border:solid lightgrey 0.5px;";
-      section.insertBefore(hr, section.firstChild);
-      section.insertBefore(button, section.firstChild); //section.insertBefore(heading, section.firstChild);
+      section.insertBefore(button, section.firstChild);
+      const main = document.createElement('main'); //main.style = "display:inline-block;";
 
+      Array.from(section.childNodes).filter(child => child.name !== 'source').forEach(child => {
+        main.appendChild(section.removeChild(child));
+      });
+      section.appendChild(main);
       const tab = document.createElement('vaadin-tab');
       tab.appendChild(document.createTextNode(title));
       tabs.appendChild(tab);
-      const templates = Array.from(section.childNodes).filter(node => node.tagName === 'CODE');
-      templates.forEach(template => {
-        Array.from(template.childNodes).forEach(node => {//section.appendChild(node);
-        });
-      });
-      const scripts = Array.from(section.childNodes).filter(node => node.tagName === 'SCRIPT');
-      scripts.forEach(script => {
-        //console.log('Cloning script: ', script.innerText);
-        let clone = document.createElement('script');
-        clone.innerText = script.innerText;
-        document.head.appendChild(clone);
-      });
     });
 
     this._selectSection();
@@ -74155,13 +74159,23 @@ window.customElements.define('tm-examples', class extends LitElement {
             tm-sites > h2, tm-sites > span {
                 color: gray;
             }
+
+            /* TODO: need to work out how to style within slotted elements (section need a main for the example to go in.)*/
+            ::slotted(section) {
+                box-sizing: border-box;
+                //border: solid red 5px;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                padding-top: 20px;
+                //border: solid lightgray 1px;
+            }
         `;
   } // noinspection JSUnusedGlobalSymbols
 
 
   render() {
     return html$1`
-            
             <article>
                 <header>
                     <div class="header">
@@ -74188,7 +74202,7 @@ window.customElements.define('tm-examples', class extends LitElement {
                 </footer>
             </article>
 
-            <tm-demo-source id="ddd"></tm-demo-source>
+            <tm-demo-source id="source"></tm-demo-source>
         `;
   }
 

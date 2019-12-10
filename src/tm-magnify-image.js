@@ -45,12 +45,12 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
                 //border: 3px solid #000;
                 border-radius: 50%;
                 cursor: none;
-                z-index: 200;
+                z-index: 2;
             }
             #magnify-glass {
                 display: block;
                 position: absolute;
-                z-index: 300;
+                z-index: 3;
                 //display: none;
                 box-sizing: border-box;
                 //border: solid darkblue 2px;
@@ -72,12 +72,14 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
         this.mag = this.shadowRoot.getElementById('magnified-image');
         this.glass = this.shadowRoot.getElementById('magnify-glass');
         const images = this.shadowRoot.getElementById('slot').assignedNodes().filter(el => el.tagName === 'IMG');
-        let offsetX, offsetY;
+        let offsetX = 0, offsetY = 0;
 
         if (images.length > 0) {
             this.img = images[0];
-            this.positionMagifyingGlass();
-            this.positionMagifyingGlass(); // TODO: need to review why this is required
+            setTimeout( () => {
+                this.positionMagifyingGlass();
+            }, 100);
+            //this.positionMagifyingGlass(); // TODO: need to review why this is required
             if (this.draggable) {
                 addListener(this.glass, 'down', (e) => {
                     const {x, y} = e.detail;
@@ -101,6 +103,7 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
     }
 
     positionMagifyingGlass() {
+        console.log('Positioning Magnifying Glass');
         const {img, mag, glass, zoom, ratioX, ratioY, ratioSize} = this;
 
         const magImageWidth = (img.width * zoom);
