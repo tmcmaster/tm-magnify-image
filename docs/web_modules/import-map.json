@@ -1,5 +1,6 @@
 {
   "imports": {
-    "@wonkytech/tm-examples": "./@wonkytech/tm-examples.js"
+    "@wonkytech/tm-examples": "./@wonkytech/tm-examples.js",
+    "@wonkytech/tm-magnify-image": "./@wonkytech/tm-magnify-image.js"
   }
 }

@@ -23,13 +23,19 @@ render(html`
     </style>
     <tm-examples heading="Magnify Image" .sites="${sites}">
         <section title="Fixed">
-            <tm-magnify-image><img src="images/colourful-grid.png"/></tm-magnify-image>
+            <tm-magnify-image>
+                <img src="images/colourful-grid.png"/>
+            </tm-magnify-image>
         </section>
         <section title="Draggable">
-            <tm-magnify-image draggable><img src="images/colourful-grid.png"/></tm-magnify-image>
+            <tm-magnify-image draggable>
+                <img src="images/colourful-grid.png"/>
+            </tm-magnify-image>
         </section>
         <section title="Smaller">
-            <tm-magnify-image draggable ratioSize="0.2"><img src="images/colourful-grid.png"/></tm-magnify-image>
+            <tm-magnify-image draggable ratioSize="0.2">
+                <img src="images/colourful-grid.png"/>
+            </tm-magnify-image>
         </section>
     </tm-examples>
 `, document.querySelector('body'));

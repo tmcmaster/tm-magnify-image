@@ -4,6 +4,7 @@
         "build": "npm install && npm run web"
     },
     "dependencies": {
-        "@wonkytech/tm-examples": "latest"
+        "@wonkytech/tm-examples": "latest",
+        "@wonkytech/tm-magnify-image": "latest"
     }
 }
