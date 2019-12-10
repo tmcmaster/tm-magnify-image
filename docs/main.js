@@ -1,5 +1,7 @@
 import {html, render} from "./web_modules/lit-html.js";
 
+import './web_modules/@wonkytech/tm-examples.js';
+
 let sites = {
     'src': 'https://github.com/tmcmaster/tm-magnify-image',
     'pika': 'https://www.pika.dev/npm/@wonkytech/tm-magnify-image',
@@ -20,8 +22,14 @@ render(html`
         }
     </style>
     <tm-examples heading="Magnify Image" .sites="${sites}">
-        <section title="Magnify Image">
+        <section title="Fixed">
             <tm-magnify-image><img src="images/colourful-grid.png"/></tm-magnify-image>
+        </section>
+        <section title="Draggable">
+            <tm-magnify-image draggable><img src="images/colourful-grid.png"/></tm-magnify-image>
+        </section>
+        <section title="Smaller">
+            <tm-magnify-image draggable ratioSize="0.2"><img src="images/colourful-grid.png"/></tm-magnify-image>
         </section>
     </tm-examples>
 `, document.querySelector('body'));
