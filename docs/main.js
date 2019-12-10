@@ -19,10 +19,18 @@ render(html`
             width: 500px;
             height: 500px;
         }
+        tm-magnify-image {
+            margin: 100px;
+        }
     </style>
     <tm-examples heading="Magnify Image" .sites="${sites}">
         <section title="Draggable">
             <tm-magnify-image draggable>
+                <img src="images/colourful-grid.png"/>
+            </tm-magnify-image>
+        </section>
+        <section title="Draggable / No Zoom">
+            <tm-magnify-image ratioSize="0.2" ratioX="0.35" ratioY="0.35" zoom="2" draggable>
                 <img src="images/colourful-grid.png"/>
             </tm-magnify-image>
         </section>

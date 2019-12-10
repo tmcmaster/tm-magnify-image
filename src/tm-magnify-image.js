@@ -45,12 +45,12 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
                 //border: 3px solid #000;
                 border-radius: 50%;
                 cursor: none;
-                z-index: 2;
+                z-index: 200;
             }
             #magnify-glass {
                 display: block;
                 position: absolute;
-                z-index: 3;
+                z-index: 300;
                 //display: none;
                 box-sizing: border-box;
                 //border: solid darkblue 2px;
@@ -77,6 +77,7 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
         if (images.length > 0) {
             this.img = images[0];
             this.positionMagifyingGlass();
+            this.positionMagifyingGlass(); // TODO: need to review why this is required
             if (this.draggable) {
                 addListener(this.glass, 'down', (e) => {
                     const {x, y} = e.detail;
