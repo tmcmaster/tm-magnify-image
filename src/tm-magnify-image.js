@@ -30,7 +30,7 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
             :host {
                 display: inline-block;
                 box-sizing: border-box;
-                //border: solid gray 1px;
+                border: solid gray 1px;
                 position: relative;
                 z-index: 1;
             }
@@ -82,18 +82,31 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
             if (this.draggable) {
                 addListener(this.glass, 'down', (e) => {
                     const {x, y} = e.detail;
-                    offsetX = x - this.mag.offsetLeft - this.glass.width*this.ratioSize;
-                    offsetY = y - this.mag.offsetTop - this.glass.height*this.ratioSize;
-                    //console.log('Offset', offsetX, offsetY);
+                    const imageRect = this.mag.getBoundingClientRect();
+
+                    const magCenterX = this.img.width/2 * this.ratioSize;
+                    const magCenterY = this.img.width/2 * this.ratioSize;
+                    const magGrabX = x - imageRect.x;
+                    const magGrabY = y - imageRect.y;
+
+                    offsetX = magCenterX - magGrabX;
+                    offsetY = magCenterY - magGrabY;
+
+                    // offsetX = x - this.mag.offsetLeft + (this.mag.clientWidth-this.img.width)/2;
+                    // offsetY = y - this.mag.offsetTop + (this.mag.clientHeight-this.img.height)/2;
+
+                    // offsetX = x - imageRect.x + 102*this.ratioSize;
+                    // offsetY = y - imageRect.y + 103*this.ratioSize;
+
+                    //console.log(`Mouse: x(${x}), y(${y}) | Mag: x(${imageRect.x}), y(${imageRect.y}) | Offset: x(${offsetX}), y(${offsetY})`);
                 });
                 let count = 0;
                 addListener(this.glass, 'track', (e) => {
-                    //console.log('Move', e);
                     const {x, y} = e.detail;
-                    // TODO: remove the need for the static -0.5
-                    const newRatioX = (x-offsetX) / this.img.width -0.5;
-                    const newRatioY = (y-offsetY) / this.img.height -0.5;
-                    if (++count % 50 === 0) console.log(`Ratio X(${newRatioX}), Y(${newRatioY})`);
+                    const imageRect = this.img.getBoundingClientRect();
+                    const newRatioX = (x-imageRect.x+offsetX) / this.img.width;
+                    const newRatioY = (y-imageRect.y+offsetY) / this.img.height;
+                    //if (++count % 50 === 0) console.log(`Ratio X(${newRatioX}), Y(${newRatioY})`);
                     this.ratioX = (newRatioX < 0 ? 0 : (newRatioX > 1 ? 1 : newRatioX));
                     this.ratioY = (newRatioY < 0 ? 0 : (newRatioY > 1 ? 1 : newRatioY));
 
