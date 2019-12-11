@@ -20240,7 +20240,7 @@ function createTemplatizerClass(template, templateInfo, options) {
 /**
  * Adds propagate effects from the template to the template instance for
  * properties that the host binds to the template using the `_host_` prefix.
- * 
+ *
  * @suppress {missingProperties} class.prototype is not defined for some reason
  */
 function addPropagateEffects(template, templateInfo, options) {
@@ -74069,6 +74069,7 @@ window.customElements.define('tm-examples', class extends LitElement {
 
     tabs.addEventListener('selected-changed', () => {
       this._selectSection();
+        document.dispatchEvent(new CustomEvent('refresh-components'));
     });
   }
 
