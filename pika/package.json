@@ -4,7 +4,7 @@
         "build": "npm update && npm run web"
     },
     "dependencies": {
-        "@wonkytech/tm-examples": "latest",
-        "@wonkytech/tm-magnify-image": "^0.0.5"
+        "@wonkytech/tm-examples": "^0.0.26",
+        "@wonkytech/tm-magnify-image": "^0.0.6"
     }
 }

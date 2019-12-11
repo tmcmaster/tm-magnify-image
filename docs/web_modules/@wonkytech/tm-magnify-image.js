@@ -37,7 +37,7 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
             :host {
                 display: inline-block;
                 box-sizing: border-box;
-                //border: solid gray 1px;
+                border: solid gray 1px;
                 position: relative;
                 z-index: 1;
             }
@@ -49,7 +49,6 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
                 /*width: 300px;*/
                 /*height: 300px;*/
                 box-sizing: border-box;
-                //border: 3px solid #000;
                 border-radius: 50%;
                 cursor: none;
                 z-index: 2;
@@ -94,18 +93,27 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
             x,
             y
           } = e.detail;
-          offsetX = x - this.mag.offsetLeft - this.glass.width * this.ratioSize;
-          offsetY = y - this.mag.offsetTop - this.glass.width * this.ratioSize; //console.log('Offset', offsetX, offsetY);
+          const imageRect = this.mag.getBoundingClientRect();
+          const magCenterX = this.img.width / 2 * this.ratioSize;
+          const magCenterY = this.img.width / 2 * this.ratioSize;
+          const magGrabX = x - imageRect.x;
+          const magGrabY = y - imageRect.y;
+          offsetX = magCenterX - magGrabX;
+          offsetY = magCenterY - magGrabY; // offsetX = x - this.mag.offsetLeft + (this.mag.clientWidth-this.img.width)/2;
+          // offsetY = y - this.mag.offsetTop + (this.mag.clientHeight-this.img.height)/2;
+          // offsetX = x - imageRect.x + 102*this.ratioSize;
+          // offsetY = y - imageRect.y + 103*this.ratioSize;
+          //console.log(`Mouse: x(${x}), y(${y}) | Mag: x(${imageRect.x}), y(${imageRect.y}) | Offset: x(${offsetX}), y(${offsetY})`);
         });
         addListener(this.glass, 'track', e => {
-          //console.log('Move', e);
           const {
             x,
             y
-          } = e.detail; //console.log('Offset', offsetX, offsetY);
+          } = e.detail;
+          const imageRect = this.img.getBoundingClientRect();
+          const newRatioX = (x - imageRect.x + offsetX) / this.img.width;
+          const newRatioY = (y - imageRect.y + offsetY) / this.img.height; //if (++count % 50 === 0) console.log(`Ratio X(${newRatioX}), Y(${newRatioY})`);
 
-          const newRatioX = (x - offsetX) / this.img.width;
-          const newRatioY = (y - offsetY) / this.img.height;
           this.ratioX = newRatioX < 0 ? 0 : newRatioX > 1 ? 1 : newRatioX;
           this.ratioY = newRatioY < 0 ? 0 : newRatioY > 1 ? 1 : newRatioY;
           this.positionMagifyingGlass();
@@ -115,7 +123,7 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
   }
 
   positionMagifyingGlass() {
-    console.log('Positioning Magnifying Glass');
+    //console.log('Positioning Magnifying Glass');
     const {
       img,
       mag,
@@ -125,29 +133,42 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
       ratioY,
       ratioSize
     } = this;
-    const magImageWidth = img.width * zoom;
-    const magImageHeight = img.height * zoom;
-    const magDivWidth = ratioSize * 100;
-    const magDivHeight = ratioSize * 100;
-    const magDivTop = ratioY * 100 - magDivHeight / 2;
-    const magDivLeft = ratioX * 100 - magDivWidth / 2;
-    const magDivImageOffsetLeft = magImageWidth * magDivLeft / 100 + ratioSize / 2 * img.width;
-    const magDivImageOffsetTop = magImageHeight * magDivTop / 100 + ratioSize / 2 * img.height;
-    const glassWidth = magDivWidth * 2.52;
-    const glassTop = magDivTop - glassWidth * 0.1;
-    const glassLeft = magDivLeft - glassWidth * 0.1;
-    mag.style.top = magDivTop + "%";
-    mag.style.left = magDivLeft + "%";
-    mag.style.width = magDivWidth + "%";
-    mag.style.height = magDivHeight + "%";
-    console.log('Size ', magImageWidth + "px " + magImageHeight + "px");
+    const imgWidth = img.width;
+    const imgHeight = img.height;
+    const glassAspectRatio = 567 / 756;
+    const magImageWidth = imgWidth * zoom;
+    const magImageHeight = imgHeight * zoom;
+    const magDivSize = imgWidth * ratioSize;
+    const magDivLeft = imgWidth * ratioX - magDivSize / 2;
+    const magDivTop = imgHeight * ratioY - magDivSize / 2;
+    const magImageOffsetX = -(magImageWidth * ratioX - imgWidth * ratioX) - magDivLeft;
+    const magImageOffsetY = -(magImageHeight * ratioY - imgHeight * ratioY) - magDivTop; //console.log('MagImageOffset', magImageOffsetX, magImageOffsetY);
+    // const magDivWidth = (ratioSize * 100);
+    // const magDivHeight = (ratioSize * 100);
+    // const magImageTop = -((magWidth - img.width)/2);
+    // const magImageLeft = -((magHeight - img.height)/2);
+    //
+    // const magDivImageOffsetLeft = -((magWidth - img.width)/2);
+    // const magDivImageOffsetTop = -((magHeight - img.height)/2);
+    //const glassImageRatio =
+
+    const glassWidth = magDivSize * 2.52;
+    const glassHeight = glassWidth * glassAspectRatio;
+    const glassLeft = magDivLeft - 0.11 * glassWidth;
+    const glassTop = magDivTop - 0.11 * glassHeight;
+    mag.style.top = magDivTop + "px";
+    mag.style.left = magDivLeft + "px";
+    mag.style.width = magDivSize + "px";
+    mag.style.height = magDivSize + "px"; //console.log('Size ', magImageWidth + "px " + magImageHeight + "px");
+
     mag.style.backgroundSize = magImageWidth + "px " + magImageHeight + "px";
     mag.style.backgroundImage = "url('" + img.src + "')";
-    mag.style.backgroundRepeat = "no-repeat";
-    mag.style.backgroundPosition = `-${magDivImageOffsetLeft}px -${magDivImageOffsetTop}px`;
-    glass.style.width = glassWidth + "%";
-    glass.style.top = glassTop + "%";
-    glass.style.left = glassLeft + "%";
+    mag.style.backgroundRepeat = "no-repeat"; //mag.style.backgroundPosition = `250px 250px`;
+
+    mag.style.backgroundPosition = `${magImageOffsetX}px ${magImageOffsetY}px`;
+    glass.style.width = glassWidth + "px";
+    glass.style.top = glassTop + "px";
+    glass.style.left = glassLeft + "px"; //glass.style.display = 'none';
   }
 
 });
