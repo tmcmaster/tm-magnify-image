@@ -5,6 +5,6 @@
     },
     "dependencies": {
         "@wonkytech/tm-examples": "^0.0.28",
-        "@wonkytech/tm-magnify-image": "^0.0.6"
+        "@wonkytech/tm-magnify-image": "^0.0.7"
     }
 }

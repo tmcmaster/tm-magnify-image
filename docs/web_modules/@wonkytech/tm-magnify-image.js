@@ -23,16 +23,19 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
   }
 
   constructor() {
+    console.log('METHOD: constructor');
     super();
     this.zoom = 2;
     this.ratioX = 0.5;
     this.ratioY = 0.5;
     this.ratioSize = 0.3;
     this.draggable = false;
-  }
+  } // noinspection JSUnusedGlobalSymbols
+
 
   static get styles() {
-    // language=CSS
+    console.log('METHOD: styles'); // language=CSS
+
     return css`
             :host {
                 display: inline-block;
@@ -67,63 +70,114 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
 
 
   render() {
+    console.log('METHOD: render');
     return html`
-            <slot id="slot"></slot>
+            <slot id="slot" @slotchange=${this}></slot>
             <div id="magnified-image"></div>
             <img id="magnify-glass" src="images/magnifying-glass.png"/>
         `;
-  }
+  } // TODO: change this to an explicit function call in @slotchange
+  // noinspection JSUnusedGlobalSymbols
+
+
+  handleEvent(event) {
+    console.log('METHOD: handleEvent'); //console.log(`Slot change event slot`);
+
+    const images = this.shadowRoot.getElementById('slot').assignedNodes().filter(el => el.tagName === 'IMG');
+
+    if (images.length > 0) {
+      let counter = 0;
+      const image = images[0];
+      this.img = image;
+      const interval = setInterval(() => {
+        if (image.width > 0) {
+          console.log('Image Width: ' + image.width);
+          clearInterval(interval);
+          this.dispatchEvent(new CustomEvent('image-loaded'));
+        } else {
+          if (++counter % 10 === 0) console.log('Still waiting on image: ' + image.src);
+
+          if (counter > 100) {
+            console.warn('Image took too long to load: ' + image.src);
+            clearInterval(interval);
+          }
+        }
+      }, 100);
+    }
+  } // noinspection JSUnusedGlobalSymbols
+
+
+  connectedCallback() {
+    console.log('METHOD: connectedCallback');
+    super.connectedCallback();
+    this.addEventListener('image-loaded', () => {
+      this._initialiseMagnifyingGlass();
+    });
+    setTimeout(() => {
+      this._initialiseMagnifyingGlass();
+    }, 50);
+  } // noinspection JSUnusedGlobalSymbols
+
+
+  disconnectedCallback() {
+    console.log('METHOD: disconnectedCallback');
+    this.removeEventListener('image-loaded', () => {
+      this._initialiseMagnifyingGlass();
+    });
+    super.disconnectedCallback();
+  } // noinspection JSUnusedGlobalSymbols
+
 
   firstUpdated(_changedProperties) {
+    console.log('METHOD: firstUpdated');
     this.mag = this.shadowRoot.getElementById('magnified-image');
     this.glass = this.shadowRoot.getElementById('magnify-glass');
-    const images = this.shadowRoot.getElementById('slot').assignedNodes().filter(el => el.tagName === 'IMG');
     let offsetX = 0,
         offsetY = 0;
 
-    if (images.length > 0) {
-      this.img = images[0];
-      setTimeout(() => {
-        this.positionMagifyingGlass();
-      }, 100); //this.positionMagifyingGlass(); // TODO: need to review why this is required
-
-      if (this.draggable) {
-        addListener(this.glass, 'down', e => {
-          const {
-            x,
-            y
-          } = e.detail;
-          const imageRect = this.mag.getBoundingClientRect();
-          const magCenterX = this.img.width / 2 * this.ratioSize;
-          const magCenterY = this.img.width / 2 * this.ratioSize;
-          const magGrabX = x - imageRect.x;
-          const magGrabY = y - imageRect.y;
-          offsetX = magCenterX - magGrabX;
-          offsetY = magCenterY - magGrabY; // offsetX = x - this.mag.offsetLeft + (this.mag.clientWidth-this.img.width)/2;
-          // offsetY = y - this.mag.offsetTop + (this.mag.clientHeight-this.img.height)/2;
-          // offsetX = x - imageRect.x + 102*this.ratioSize;
-          // offsetY = y - imageRect.y + 103*this.ratioSize;
-          //console.log(`Mouse: x(${x}), y(${y}) | Mag: x(${imageRect.x}), y(${imageRect.y}) | Offset: x(${offsetX}), y(${offsetY})`);
-        });
-        addListener(this.glass, 'track', e => {
-          const {
-            x,
-            y
-          } = e.detail;
-          const imageRect = this.img.getBoundingClientRect();
-          const newRatioX = (x - imageRect.x + offsetX) / this.img.width;
-          const newRatioY = (y - imageRect.y + offsetY) / this.img.height; //if (++count % 50 === 0) console.log(`Ratio X(${newRatioX}), Y(${newRatioY})`);
-
-          this.ratioX = newRatioX < 0 ? 0 : newRatioX > 1 ? 1 : newRatioX;
-          this.ratioY = newRatioY < 0 ? 0 : newRatioY > 1 ? 1 : newRatioY;
-          this.positionMagifyingGlass();
-        });
-      }
+    if (this.draggable) {
+      addListener(this.glass, 'down', e => {
+        const {
+          x,
+          y
+        } = e.detail;
+        const imageRect = this.mag.getBoundingClientRect();
+        const magCenterX = this.img.width / 2 * this.ratioSize;
+        const magCenterY = this.img.width / 2 * this.ratioSize;
+        const magGrabX = x - imageRect.x;
+        const magGrabY = y - imageRect.y;
+        offsetX = magCenterX - magGrabX;
+        offsetY = magCenterY - magGrabY;
+      });
+      addListener(this.glass, 'track', e => {
+        const {
+          x,
+          y
+        } = e.detail;
+        const imageRect = this.img.getBoundingClientRect();
+        const newRatioX = (x - imageRect.x + offsetX) / this.img.width;
+        const newRatioY = (y - imageRect.y + offsetY) / this.img.height;
+        this.ratioX = newRatioX < 0 ? 0 : newRatioX > 1 ? 1 : newRatioX;
+        this.ratioY = newRatioY < 0 ? 0 : newRatioY > 1 ? 1 : newRatioY;
+        this.positionMagnifyingGlass();
+      });
     }
   }
 
-  positionMagifyingGlass() {
-    //console.log('Positioning Magnifying Glass');
+  _initialiseMagnifyingGlass() {
+    const {
+      img,
+      mag
+    } = this;
+    console.log('initialising the magnifying glass');
+    if (this.img === undefined) return;
+    console.log('initialising the magnifying glass: ', img.src, img.width, img.height);
+    mag.style.backgroundImage = "url('" + img.src + "')";
+    mag.style.backgroundRepeat = "no-repeat";
+    this.positionMagnifyingGlass();
+  }
+
+  positionMagnifyingGlass() {
     const {
       img,
       mag,
@@ -142,16 +196,7 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
     const magDivLeft = imgWidth * ratioX - magDivSize / 2;
     const magDivTop = imgHeight * ratioY - magDivSize / 2;
     const magImageOffsetX = -(magImageWidth * ratioX - imgWidth * ratioX) - magDivLeft;
-    const magImageOffsetY = -(magImageHeight * ratioY - imgHeight * ratioY) - magDivTop; //console.log('MagImageOffset', magImageOffsetX, magImageOffsetY);
-    // const magDivWidth = (ratioSize * 100);
-    // const magDivHeight = (ratioSize * 100);
-    // const magImageTop = -((magWidth - img.width)/2);
-    // const magImageLeft = -((magHeight - img.height)/2);
-    //
-    // const magDivImageOffsetLeft = -((magWidth - img.width)/2);
-    // const magDivImageOffsetTop = -((magHeight - img.height)/2);
-    //const glassImageRatio =
-
+    const magImageOffsetY = -(magImageHeight * ratioY - imgHeight * ratioY) - magDivTop;
     const glassWidth = magDivSize * 2.52;
     const glassHeight = glassWidth * glassAspectRatio;
     const glassLeft = magDivLeft - 0.11 * glassWidth;
@@ -159,16 +204,12 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
     mag.style.top = magDivTop + "px";
     mag.style.left = magDivLeft + "px";
     mag.style.width = magDivSize + "px";
-    mag.style.height = magDivSize + "px"; //console.log('Size ', magImageWidth + "px " + magImageHeight + "px");
-
+    mag.style.height = magDivSize + "px";
     mag.style.backgroundSize = magImageWidth + "px " + magImageHeight + "px";
-    mag.style.backgroundImage = "url('" + img.src + "')";
-    mag.style.backgroundRepeat = "no-repeat"; //mag.style.backgroundPosition = `250px 250px`;
-
     mag.style.backgroundPosition = `${magImageOffsetX}px ${magImageOffsetY}px`;
     glass.style.width = glassWidth + "px";
     glass.style.top = glassTop + "px";
-    glass.style.left = glassLeft + "px"; //glass.style.display = 'none';
+    glass.style.left = glassLeft + "px";
   }
 
 });
