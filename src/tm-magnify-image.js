@@ -16,6 +16,7 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
     }
 
     constructor() {
+        console.log('METHOD: constructor');
         super();
         this.zoom = 2;
         this.ratioX = 0.5;
@@ -24,7 +25,9 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
         this.draggable = false;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     static get styles() {
+        console.log('METHOD: styles');
         // language=CSS
         return css `
             :host {
@@ -60,6 +63,7 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
 
     // noinspection JSUnusedGlobalSymbols
     render() {
+        console.log('METHOD: render');
         return html`
             <slot id="slot" @slotchange=${this}></slot>
             <div id="magnified-image"></div>
@@ -70,6 +74,7 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
     // TODO: change this to an explicit function call in @slotchange
     // noinspection JSUnusedGlobalSymbols
     handleEvent(event) {
+        console.log('METHOD: handleEvent');
         //console.log(`Slot change event slot`);
         const images = this.shadowRoot.getElementById('slot').assignedNodes().filter(el => el.tagName === 'IMG');
         if (images.length > 0) {
@@ -94,20 +99,25 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
 
     // noinspection JSUnusedGlobalSymbols
     connectedCallback() {
+        console.log('METHOD: connectedCallback');
         super.connectedCallback();
         this.addEventListener('image-loaded', () => {this._initialiseMagnifyingGlass()});
-        document.addEventListener('refresh-components', () => {this._initialiseMagnifyingGlass()});
+        setTimeout(() => {
+            this._initialiseMagnifyingGlass();
+        }, 50);
+
     }
 
     // noinspection JSUnusedGlobalSymbols
     disconnectedCallback() {
+        console.log('METHOD: disconnectedCallback');
         this.removeEventListener('image-loaded', () => {this._initialiseMagnifyingGlass()});
-        document.removeEventListener('refresh-components', () => {this._initialiseMagnifyingGlass()})
         super.disconnectedCallback();
     }
 
     // noinspection JSUnusedGlobalSymbols
     firstUpdated(_changedProperties) {
+        console.log('METHOD: firstUpdated');
         this.mag = this.shadowRoot.getElementById('magnified-image');
         this.glass = this.shadowRoot.getElementById('magnify-glass');
 
@@ -184,27 +194,6 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
 
         const glassLeft = magDivLeft - (0.11*glassWidth);
         const glassTop = magDivTop - (0.11*glassHeight);
-
-        // console.log('Variables: ', JSON.stringify({
-        //     mag: {
-        //         left: magDivLeft,
-        //         top: magDivTop,
-        //         width: magDivSize,
-        //         height: magDivSize
-        //     },
-        //     img: {
-        //         left: imgLeft,
-        //         top: imgTop,
-        //         width: imgWidth,
-        //         height: imgHeight
-        //     },
-        //     glass: {
-        //         left: glassLeft,
-        //         top: glassTop,
-        //         width: glassWidth,
-        //         height: glassHeight
-        //     }
-        // }));
 
         mag.style.top = magDivTop + "px";
         mag.style.left = magDivLeft + "px";

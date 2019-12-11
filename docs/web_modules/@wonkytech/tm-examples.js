@@ -20240,7 +20240,7 @@ function createTemplatizerClass(template, templateInfo, options) {
 /**
  * Adds propagate effects from the template to the template instance for
  * properties that the host binds to the template using the `_host_` prefix.
- *
+ * 
  * @suppress {missingProperties} class.prototype is not defined for some reason
  */
 function addPropagateEffects(template, templateInfo, options) {
@@ -74054,12 +74054,11 @@ window.customElements.define('tm-examples', class extends LitElement {
       button.style = 'margin-top:-20px;float:right;border:solid lightgrey 0.5px;';
       button.appendChild(document.createTextNode('Source'));
       section.insertBefore(button, section.firstChild);
-      const main = document.createElement('main'); //main.style = "display:inline-block;";
-
+      const main = document.createElement('main');
       Array.from(section.childNodes).filter(child => child.name !== 'source').forEach(child => {
         main.appendChild(section.removeChild(child));
       });
-      section.appendChild(main);
+      section.main = main;
       const tab = document.createElement('vaadin-tab');
       tab.appendChild(document.createTextNode(title));
       tabs.appendChild(tab);
@@ -74069,7 +74068,6 @@ window.customElements.define('tm-examples', class extends LitElement {
 
     tabs.addEventListener('selected-changed', () => {
       this._selectSection();
-        document.dispatchEvent(new CustomEvent('refresh-components'));
     });
   }
 
@@ -74080,6 +74078,11 @@ window.customElements.define('tm-examples', class extends LitElement {
     } = this;
     sections.forEach((section, index) => {
       if (index === tabs.selected) {
+        if (section.main !== undefined) {
+          section.appendChild(section.main);
+          section.main = undefined;
+        }
+
         section.style = "display:block";
       } else {
         section.style = "display:none";
