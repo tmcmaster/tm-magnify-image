@@ -1,6 +1,9 @@
 {
   "imports": {
+    "@polymer/polymer": "./@polymer/polymer.js",
     "@wonkytech/tm-examples": "./@wonkytech/tm-examples.js",
-    "@wonkytech/tm-magnify-image": "./@wonkytech/tm-magnify-image.js"
+    "@wonkytech/tm-magnify-image": "./@wonkytech/tm-magnify-image.js",
+    "lit-element": "./lit-element.js",
+    "lit-html": "./lit-html.js"
   }
 }

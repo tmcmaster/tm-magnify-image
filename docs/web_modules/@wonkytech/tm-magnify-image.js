@@ -1,4 +1,7 @@
-import { L as LitElement, c as css, h as html, u as addListener } from '../common/gestures-aa343579.js';
+import '../common/async-9bc33441.js';
+import { h as html } from '../common/lit-html-9957b87e.js';
+import { LitElement, css } from '../lit-element.js';
+import { a as addListener } from '../common/gestures-bd23f89a.js';
 
 window.customElements.define('tm-magnify-image', class extends LitElement {
   // noinspection JSUnusedGlobalSymbols

@@ -1,10 +1,13 @@
 {
     "scripts": {
-        "web": "npx @pika/web --dest ../docs/web_modules",
+        "web": "pika-web --dest ../docs/web_modules --clean",
         "build": "npm update && npm run web"
     },
     "dependencies": {
-        "@wonkytech/tm-examples": "^0.0.28",
-        "@wonkytech/tm-magnify-image": "^0.0.7"
+        "@polymer/polymer": "^3.3.0",
+        "@wonkytech/tm-examples": "~0.1",
+        "@wonkytech/tm-magnify-image": "~0.0",
+        "lit-element": "^2.0.1",
+        "lit-html": "^1.0.0"
     }
 }

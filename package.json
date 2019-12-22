@@ -22,17 +22,12 @@
         ]
     },
     "scripts": {
-        "build": "pika build",
+        "build": "npm update && pika build",
         "version": "npm run build",
         "publish": "pika publish",
+        "build:docs": "(cd pika; npm run build)",
         "demo": "owc-dev-server",
-        "demo:open": "owc-dev-server --open demo",
-        "docs:clear": "rm -rf docs/web_modules",
-        "docs:install": "npm install && npx @pika/web --dest docs/web_modules",
-        "docs:pika": "(cd pika; npm run build)",
-        "build:docs": "npm run docs:clear && npm run docs:install && npm run docs:pika",
-        "docs": "http-server docs",
-        "docs:open": "http-server --open docs"
+        "docs": "http-server docs"
     },
     "dependencies": {
         "@polymer/polymer": "^3.3.0",
