@@ -45,12 +45,12 @@ render(html`
             </tm-magnify-image>
         </section>
         <section title="More Zoom">
-            <tm-magnify-image ratioSize="0.5" zoom="4" draggable>
+            <tm-magnify-image ratioSize="0.4" zoom="4" draggable>
                 <img src="images/colourful-grid.png"/>
             </tm-magnify-image>
         </section>
         <section title="Lego Head">
-            <tm-magnify-image ratioSize="0.5" zoom="2" ratioX="0.6" ratioY="0.65" draggable>
+            <tm-magnify-image ratioSize="0.4" zoom="2" ratioX="0.6" ratioY="0.7" draggable>
                 <img src="images/legohead-transparent.png"/>
             </tm-magnify-image>
         </section>
