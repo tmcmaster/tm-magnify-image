@@ -30,13 +30,28 @@ render(html`
             </tm-magnify-image>
         </section>
         <section title="Fixed">
-            <tm-magnify-image draggable>
+            <tm-magnify-image zoom="2">
                 <img src="images/colourful-grid.png"/>
             </tm-magnify-image>
         </section>
         <section title="Smaller">
-            <tm-magnify-image ratioSize="0.2" draggable>
+            <tm-magnify-image ratioSize="0.2" zoom="2" draggable>
                 <img src="images/colourful-grid.png"/>
+            </tm-magnify-image>
+        </section>
+        <section title="No Zoom">
+            <tm-magnify-image zoom="1" draggable>
+                <img src="images/colourful-grid.png"/>
+            </tm-magnify-image>
+        </section>
+        <section title="More Zoom">
+            <tm-magnify-image ratioSize="0.5" zoom="4" draggable>
+                <img src="images/colourful-grid.png"/>
+            </tm-magnify-image>
+        </section>
+        <section title="Lego Head">
+            <tm-magnify-image ratioSize="0.5" zoom="2" ratioX="0.6" ratioY="0.65" draggable>
+                <img src="images/legohead-transparent.png"/>
             </tm-magnify-image>
         </section>
     </tm-examples>

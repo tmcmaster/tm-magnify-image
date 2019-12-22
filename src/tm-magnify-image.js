@@ -18,7 +18,7 @@ window.customElements.define('tm-magnify-image', class extends LitElement {
     constructor() {
         console.log('METHOD: constructor');
         super();
-        this.zoom = 2;
+        this.zoom = 1;
         this.ratioX = 0.5;
         this.ratioY = 0.5;
         this.ratioSize = 0.3;
